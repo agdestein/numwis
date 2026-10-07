@@ -13,11 +13,12 @@ gestuurd.
 
 ## Wat je kunt doen
 
-- **Uitvoeren:** druk op ▶ Uitvoeren, of op Ctrl+Enter terwijl je in de code
+- **Uitvoeren:** druk op ▶︎ Uitvoeren, of op Ctrl+Enter terwijl je in de code
   typt.
 - **Schuifjes:** een schuifje verandert een getal *in de code*: je ziet precies
-  welke regel verandert. De code wordt meteen opnieuw uitgevoerd. Pas je het
-  getal in de code zelf aan, dan schuift het schuifje mee.
+  welke regel verandert. Druk daarna op ▶︎ Uitvoeren om te zien wat er gebeurt;
+  tot dan is de oude uitvoer grijs. Pas je het getal in de code zelf aan, dan
+  schuift het schuifje mee.
 - **Vergelijken:** onder je uitvoer staat de uitvoer uit het boekje. Is je
   uitvoer precies hetzelfde, dan zie je ✓ *zelfde als in het boekje*.
 - **Stoppen:** blijft je code hangen, bijvoorbeeld in een oneindige lus? Druk

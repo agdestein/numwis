@@ -49,7 +49,7 @@ geen account nodig.
 
 [Newton-Raphson in beeld](opgaven/h4-grafiek.qmd)
 
-[Schuif met de startwaarde en zie de raaklijnen meebewegen.]{.kaart-tekst}
+[Kies een startwaarde en zie waar de raaklijnen je heen brengen.]{.kaart-tekst}
 :::
 :::
 

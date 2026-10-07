@@ -13,7 +13,8 @@
 // Parameter lines are optional. A parameter is a value in the code itself:
 // the right-hand side of `name = ...` or the list in `for name in ...:`.
 // Moving a slider rewrites that value in the code (so the student sees what
-// changed) and runs the program again; editing the code moves the slider.
+// changed); editing the code moves the slider. Nothing runs until the student
+// presses Run: the old output is dimmed meanwhile, so it is clear it is stale.
 //
 //   name : min .. max step s   slider over a range
 //   name : v1 | v2 | v3        slider over fixed choices, written as in the code
@@ -31,6 +32,10 @@ import {
 
 const TIME_LIMIT_S = 10;
 const MAX_LINES = 2000;
+// Output is collected off-screen and shown in one go when the program ends, so
+// the page does not jump while the output box empties and fills again. Only a
+// program that runs longer than this shows its output while it is running.
+const REVEAL_MS = 300;
 const STORAGE_PREFIX = "numwis:";
 
 // ---------------------------------------------------------------- Python --
@@ -106,6 +111,13 @@ const sameText = (a, b) => a.trimEnd().replace(/\r\n/g, "\n") === b.trimEnd().re
 // 0.5000 -> "0.5", 10 -> "10.0" (stays a float in Python), unless the step is whole
 const formatNumber = (x, decimals) =>
   decimals === 0 ? x.toFixed(0) : x.toFixed(decimals).replace(/0+$/, "").replace(/\.$/, ".0");
+// Width and height of a base64 PNG, read from its IHDR header
+function pngSize(base64) {
+  const head = atob(base64.slice(0, 32));
+  const u32 = (i) => ((head.charCodeAt(i) << 24) | (head.charCodeAt(i + 1) << 16) |
+    (head.charCodeAt(i + 2) << 8) | head.charCodeAt(i + 3)) >>> 0;
+  return [u32(16), u32(20)];
+}
 const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 // Share links carry the code in the URL fragment: #code=<base64url(deflate)>
@@ -279,7 +291,7 @@ class Exercise {
     let input;
     if (param.type === "text") {
       input = el("input", { type: "text", spellcheck: "false", autocapitalize: "off", autocomplete: "off" });
-      input.addEventListener("input", () => this.setParam(param, input.value.trim(), false));
+      input.addEventListener("input", () => this.setParam(param, input.value.trim()));
       input.addEventListener("keydown", (e) => e.key === "Enter" && this.run());
     } else {
       const [min, max, step] = param.type === "range"
@@ -290,7 +302,7 @@ class Exercise {
         const text = param.type === "range"
           ? formatNumber(+input.value, param.decimals)
           : param.choices[+input.value];
-        this.setParam(param, text, true);
+        this.setParam(param, text);
       });
     }
     input.setAttribute("aria-label", param.name);
@@ -303,14 +315,13 @@ class Exercise {
     return { param, row, input, value };
   }
 
-  // Write a parameter value into the code. Sliders run the program right away.
-  setParam(param, text, runNow) {
+  // Write a parameter value into the code (it runs when the student presses Run).
+  setParam(param, text) {
     const where = locate(param, this.view.state.doc);
     if (!text || !where || where.text === text) return;
     this.fromSlider = true;
     this.view.dispatch({ changes: { from: where.from, to: where.to, insert: text } });
     this.fromSlider = false;
-    if (runNow) this.run();
   }
 
   // Code → sliders: show the value that is actually in the code.
@@ -345,6 +356,16 @@ class Exercise {
       window.history.replaceState(null, "", location.pathname + location.search);
     }
     this.setNote(code === this.original ? "" : "Je eigen versie, bewaard in deze browser.");
+    if (this.hasResult && !this.running) this.setStale(true);
+  }
+
+  setStale(stale) {
+    this.output.classList.toggle("is-stale", stale);
+    this.runButton.classList.toggle("is-stale", stale);
+    if (stale) {
+      this.outputHead.textContent = "code gewijzigd · druk op ▶︎ Uitvoeren";
+      this.outputHead.className = "opgave-compare";
+    }
   }
 
   setNote(text) {
@@ -374,7 +395,7 @@ class Exercise {
   }
 
   updateRunButton() {
-    this.runButton.textContent = this.running ? "■ Stop" : "▶ Uitvoeren";
+    this.runButton.textContent = this.running ? "■ Stop" : "▶︎ Uitvoeren";
     this.runButton.classList.toggle("is-running", this.running);
   }
 
@@ -398,7 +419,10 @@ class Exercise {
     this.hadError = false;
     this.lines = 0;
     this.stdout = "";
-    this.output.replaceChildren();
+    this.sink = document.createDocumentFragment();
+    this.revealTimer = setTimeout(() => this.reveal(), REVEAL_MS);
+    this.output.classList.add("is-stale");
+    this.runButton.classList.remove("is-stale");
     this.outputHead.textContent = "";
     this.outputHead.className = "opgave-compare";
     this.updateRunButton();
@@ -419,7 +443,10 @@ class Exercise {
         this.stop(`Gestopt: meer dan ${MAX_LINES} regels uitvoer. Zit er een oneindige lus in je code?`);
       }
     } else if (msg.type === "image") {
-      this.output.append(el("img", { src: `data:image/png;base64,${msg.png}`, alt: "Grafiek gemaakt door de code" }));
+      const [width, height] = pngSize(msg.png);
+      (this.sink ?? this.output).append(el("img", {
+        src: `data:image/png;base64,${msg.png}`, width, height, alt: "Grafiek gemaakt door de code",
+      }));
     } else if (msg.type === "started") {
       // the time limit starts after packages such as matplotlib have loaded
       this.setStatus("busy", "Bezig…");
@@ -438,9 +465,20 @@ class Exercise {
   }
 
   write(stream, text) {
-    const last = this.output.lastChild;
+    const target = this.sink ?? this.output;
+    const last = target.lastChild;
     if (last && last.nodeName === "SPAN" && last.dataset.stream === stream) last.textContent += text;
-    else this.output.append(el("span", { class: `out-${stream}`, "data-stream": stream }, text));
+    else target.append(el("span", { class: `out-${stream}`, "data-stream": stream }, text));
+    if (target === this.output) this.output.scrollTop = this.output.scrollHeight;
+  }
+
+  // Swap the collected output into the page in one step.
+  reveal() {
+    clearTimeout(this.revealTimer);
+    if (!this.sink) return;
+    this.output.replaceChildren(this.sink);
+    this.sink = null;
+    this.output.classList.remove("is-stale");
     this.output.scrollTop = this.output.scrollHeight;
   }
 
@@ -448,7 +486,9 @@ class Exercise {
     clearTimeout(this.timer);
     this.running = false;
     this.updateRunButton();
-    if (!this.output.hasChildNodes()) this.write("note", "(de code heeft niets geprint)");
+    if (!this.sink?.hasChildNodes() && !this.output.hasChildNodes()) this.write("note", "(de code heeft niets geprint)");
+    this.reveal();
+    this.hasResult = true;
     let compare = `klaar in ${seconds(s)}`;
     if (ok && this.booklet !== null) {
       const same = sameText(this.stdout, this.booklet);
@@ -461,7 +501,7 @@ class Exercise {
     this.release();
   }
 
-  // Hand Python back; widgets with a queued run (e.g. a slider moved meanwhile) start it now.
+  // Hand Python back; widgets with a queued run (Run pressed meanwhile) start it now.
   release() {
     runtime.owner = null;
     runtime.onMessage = null;
@@ -472,6 +512,8 @@ class Exercise {
     clearTimeout(this.timer);
     this.running = false;
     this.queued = false;
+    this.reveal();
+    this.hasResult = true;
     this.write("note", `\n${reason}\n`);
     this.outputHead.textContent = "gestopt";
     this.outputHead.className = "opgave-compare is-error";
@@ -481,8 +523,10 @@ class Exercise {
     runtime.restart();
   }
 
-  showPlaceholder(text = "Druk op ▶ Uitvoeren om de code te draaien.") {
+  showPlaceholder(text = "Druk op ▶︎ Uitvoeren om de code te draaien.") {
     this.output.replaceChildren(el("span", { class: "out-note" }, text));
+    this.hasResult = false;
+    this.setStale(false);
   }
 
   reset() {

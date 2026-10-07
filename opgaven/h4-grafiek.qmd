@@ -8,7 +8,8 @@ aliases:
 Dezelfde functie als in [opgave 4](h4-medicijn.qmd),
 $f(t) = 3t\,e^{-t/2} - 1$, maar nu als grafiek. Elke stap van Newton-Raphson
 gaat vanuit $p$ naar de grafiek, en dan langs de raaklijn terug naar de
-$t$-as. Schuif met `p0` en kijk hoe de stappen veranderen.
+$t$-as. Kies een startwaarde `p0` met het schuifje, druk op ▶︎ Uitvoeren en
+kijk waar de stappen heen gaan.
 
 Deze code staat niet in het boekje. Hij laat zien dat je online ook grafieken
 kunt maken met `matplotlib`. Dat pakket is groot: de eerste keer laden duurt
@@ -24,8 +25,8 @@ stappen : 1 .. 8 step 1        # aantal stappen van Newton-Raphson
 ::: {.probeer}
 ## Probeer zelf
 
-1. Schuif `p0` langzaam van 3 naar 9. Komen de stappen steeds bij hetzelfde
-   nulpunt uit?
+1. Probeer voor `p0` een paar waarden tussen 3 en 9. Komen de stappen steeds
+   bij hetzelfde nulpunt uit?
 2. Zet `p0 = 2.0`. Wat gaat er mis? Waarom zie je dat ook aan de grafiek?
 3. Zet `p0 = 10.0`. Waar komt de eerste stap terecht, en waarom zo ver weg?
 :::

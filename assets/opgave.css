@@ -102,6 +102,7 @@
 }
 .opgave-actions .opgave-run:hover { filter: brightness(1.08); }
 .opgave-actions .opgave-run.is-running { background: var(--opgave-error); border-color: var(--opgave-error); }
+.opgave-actions .opgave-run.is-stale { box-shadow: 0 0 0 3px color-mix(in srgb, var(--opgave-accent) 30%, transparent); }
 .opgave-hint { font-size: .8rem; color: var(--opgave-muted); }
 @media (hover: none) { .opgave-hint { display: none; } }
 
@@ -115,7 +116,10 @@ pre.opgave-output {
   border: 1px solid var(--opgave-border); border-radius: .5rem;
   padding: .7rem .85rem; margin: 0;
   max-height: 30rem; overflow: auto; white-space: pre;
+  transition: opacity .15s;
 }
+/* output that no longer belongs to the code (dimmed only if it lasts a moment) */
+pre.opgave-output.is-stale { opacity: .45; transition-delay: .2s; }
 pre.opgave-output img {
   display: block; max-width: 100%; height: auto;
   margin: .4rem 0; background: #fff; border-radius: .25rem;

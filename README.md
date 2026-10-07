@@ -59,8 +59,9 @@ figures are shown inline when the code calls `plt.show()`.
 
    A parameter is a value that is already in the code: the right-hand side of a
    top-level `name = ...` line, or the list in `for name in ...:`. Moving a
-   slider rewrites that value in the editor and reruns the code; editing the
-   code moves the slider. The `parameters` block is optional.
+   slider rewrites that value in the editor and dims the old output until the
+   student presses Run; editing the code moves the slider. The `parameters`
+   block is optional.
 3. Add the page to the sidebar in `_quarto.yml` and a card to `index.qmd`.
 
 ## Local preview
