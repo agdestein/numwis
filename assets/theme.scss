@@ -1,0 +1,29 @@
+/*-- scss:defaults --*/
+$primary: #1d5fa8;
+$link-color: #1d5fa8;
+$navbar-bg: #12355b;
+$navbar-fg: #ffffff;
+$font-size-root: 17px;
+$headings-font-weight: 650;
+
+/*-- scss:rules --*/
+.quarto-title .subtitle { color: #5b6573; font-size: 1.05rem; }
+.title { letter-spacing: -.01em; }
+
+/* exercise cards on the start page */
+.opgave-lijst { display: grid; gap: .9rem; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); margin: 1rem 0 2rem; }
+.opgave-lijst > div {
+  border: 1px solid #d5dbe3; border-radius: .6rem; padding: .9rem 1rem;
+  background: #fff; transition: border-color .15s, box-shadow .15s;
+}
+.opgave-lijst > div:hover { border-color: $primary; box-shadow: 0 2px 10px rgba(18, 53, 91, .08); }
+.opgave-lijst p { margin: 0; }
+.opgave-lijst .kaart-methode { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: #5b6573; }
+.opgave-lijst a { font-weight: 650; font-size: 1.05rem; text-decoration: none; }
+.opgave-lijst a::after { content: ""; position: absolute; inset: 0; }
+.opgave-lijst > div { position: relative; }
+.opgave-lijst .kaart-tekst { font-size: .88rem; color: #444; margin-top: .3rem; }
+
+/* "Probeer zelf" questions */
+.probeer ol { padding-left: 1.3rem; }
+.probeer li { margin-bottom: .45rem; }

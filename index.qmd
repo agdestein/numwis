@@ -1,0 +1,62 @@
+---
+title: "Numerieke Wiskunde · online"
+subtitle: "Voer de Python-codes uit het boekje uit, pas ze aan en kijk wat er gebeurt."
+---
+
+Bij de opgaven in het boekje staat een QR-code. Scan die met je telefoon en je
+komt hier: je ziet dezelfde code als in het boekje en kunt hem meteen
+uitvoeren. Verander een getal met een schuifje of in de code zelf, en vergelijk
+je uitvoer met die in het boekje. Je hoeft niets te installeren en je hebt
+geen account nodig.
+
+## Hoofdstuk 4 · Nulpunten zoeken
+
+::: {.opgave-lijst}
+::: {}
+[Opgave 1 · bisectie]{.kaart-methode}
+
+[De drijvende bal](opgaven/h4-bal.qmd)
+
+[Hoe diep steekt een houten bal in het water?]{.kaart-tekst}
+:::
+
+::: {}
+[Opgave 2 · bisectie]{.kaart-methode}
+
+[Hoeveel rente betaal je echt?](opgaven/h4-lening.qmd)
+
+[Een lening voor een e-bike, en de rente die niemand noemt.]{.kaart-tekst}
+:::
+
+::: {}
+[Opgave 3 · Newton-Raphson]{.kaart-methode}
+
+[Waar is de komeet?](opgaven/h4-kepler.qmd)
+
+[De vergelijking van Kepler, en cijfers die per stap verdubbelen.]{.kaart-tekst}
+:::
+
+::: {}
+[Opgave 4 · Newton-Raphson]{.kaart-methode}
+
+[Wanneer is het medicijn uitgewerkt?](opgaven/h4-medicijn.qmd)
+
+[Eén methode, drie startwaarden, drie heel verschillende aflopen.]{.kaart-tekst}
+:::
+
+::: {}
+[Extra · met grafiek]{.kaart-methode}
+
+[Newton-Raphson in beeld](opgaven/h4-grafiek.qmd)
+
+[Schuif met de startwaarde en zie de raaklijnen meebewegen.]{.kaart-tekst}
+:::
+:::
+
+::: {.callout-note}
+## Prototype
+
+Dit is een eerste versie om het idee te testen. De teksten en codes zijn
+voorlopig. Lees op [Hoe werkt het?](over.qmd) wat er achter de schermen
+gebeurt.
+:::

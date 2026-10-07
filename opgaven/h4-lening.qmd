@@ -1,0 +1,41 @@
+---
+title: "Hoeveel rente betaal je echt?"
+subtitle: "Opgave 2 · bisectie (§ 4.2)"
+aliases:
+  - ../h4-lening.html
+---
+
+Je leent 1200 euro voor een elektrische fiets en betaalt 24 maanden lang
+55 euro per maand terug, samen 1320 euro. Welke maandelijkse rente $r$ rekent
+de winkel? De annuïteitenformule geeft
+
+$$
+f(r) = 55 \cdot \frac{1 - (1+r)^{-24}}{r} - 1200 = 0 .
+$$
+
+Deze vergelijking is met algebra niet naar $r$ op te lossen (probeer maar!),
+maar numeriek is het routine.
+
+::: {.opgave code="bisectie_lening.py"}
+```{.parameters}
+a   : 0 .. 0.05 step 0.0005    # laagste maandrente die we proberen
+b   : 0.005 .. 0.1 step 0.005  # hoogste maandrente die we proberen
+eps : 0.001 | 0.0001 | 0.00001 | 0.000001 | 1e-9 | 1e-12   # stopcriterium
+```
+:::
+
+::: {.probeer}
+## Probeer zelf
+
+1. Kies `a = 0`. Lees de foutmelding: op welke regel gaat het mis, en waarom?
+2. Verander in de code het maandbedrag `55` in `60` (op de regel met
+   `return`). Hoeveel rente betaal je dan per jaar?
+3. Kies `b = 0.1`, een twee keer zo groot startinterval. Hoeveel stappen kost
+   dat extra? Waarom maar zo weinig?
+:::
+
+::: {.callout-tip collapse="true"}
+## Wat valt op?
+
+"Maar" 0,78% per maand klinkt onschuldig, maar het is bijna 10% per jaar.
+:::

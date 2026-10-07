@@ -1,0 +1,48 @@
+project:
+  type: website
+  output-dir: _site
+  # regenerates code/output/*.txt ("Uitvoer in het boekje") from the codes
+  pre-render: scripts/uitvoer_boekje.py
+  render:
+    - "*.qmd"
+    - "opgaven/*.qmd"
+  resources:
+    - "code/**"
+    - "assets/**"
+    - "figuren/**"
+
+lang: nl
+
+website:
+  title: "Numerieke Wiskunde · online"
+  site-url: https://agdestein.github.io/numwis/
+  description: "Python-opgaven bij het boekje Numerieke Wiskunde: uitvoeren en aanpassen in je browser."
+  page-navigation: true
+  navbar:
+    left:
+      - text: "Opgaven"
+        href: index.qmd
+      - text: "Hoe werkt het?"
+        href: over.qmd
+  sidebar:
+    style: docked
+    contents:
+      - section: "Hoofdstuk 4 · Nulpunten zoeken"
+        contents:
+          - opgaven/h4-bal.qmd
+          - opgaven/h4-lening.qmd
+          - opgaven/h4-kepler.qmd
+          - opgaven/h4-medicijn.qmd
+          - opgaven/h4-grafiek.qmd
+  page-footer:
+    left: "Prototype bij het boekje *Numerieke Wiskunde*"
+    right: "Python draait in je eigen browser ([Pyodide](https://pyodide.org))"
+
+format:
+  html:
+    theme: [cosmo, assets/theme.scss]
+    css: assets/opgave.css
+    include-after-body: assets/opgave-loader.html
+    html-math-method: katex
+    toc: false
+    smooth-scroll: true

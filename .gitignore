@@ -1,0 +1,5 @@
+/.quarto/
+/_site/
+/code/output/
+/tools/codemirror/node_modules/
+**/*.quarto_ipynb

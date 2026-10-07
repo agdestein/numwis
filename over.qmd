@@ -1,0 +1,36 @@
+---
+title: "Hoe werkt het?"
+---
+
+## Python in je browser
+
+De codes draaien met [Pyodide](https://pyodide.org): gewoon Python (versie 3.14),
+vertaald naar WebAssembly zodat je browser het zelf kan uitvoeren. De eerste
+keer wordt Python gedownload (een paar MB); daarna bewaart je browser het en
+gaat het snel. Er is geen server die je code uitvoert. Daarom werkt het ook als
+de hele klas tegelijk een QR-code scant, en wordt je code nergens naartoe
+gestuurd.
+
+## Wat je kunt doen
+
+- **Uitvoeren:** druk op ▶ Uitvoeren, of op Ctrl+Enter terwijl je in de code
+  typt.
+- **Schuifjes:** een schuifje verandert een getal *in de code*: je ziet precies
+  welke regel verandert. De code wordt meteen opnieuw uitgevoerd. Pas je het
+  getal in de code zelf aan, dan schuift het schuifje mee.
+- **Vergelijken:** onder je uitvoer staat de uitvoer uit het boekje. Is je
+  uitvoer precies hetzelfde, dan zie je ✓ *zelfde als in het boekje*.
+- **Stoppen:** blijft je code hangen, bijvoorbeeld in een oneindige lus? Druk
+  op ■ Stop. Na 10 seconden stopt de code ook vanzelf.
+- **Bewaren:** je wijzigingen blijven in deze browser bewaard, ook als je de
+  pagina sluit. Met ↺ Boekversie ga je terug naar de code uit het boekje.
+- **Delen:** *Link delen* kopieert een link waarin jouw versie van de code
+  zit. Handig om aan je docent te laten zien wat je hebt gevonden.
+- **Zelf verder:** met *Download .py* sla je de code op. Op je eigen computer
+  kun je hem uitvoeren met bijvoorbeeld [Thonny](https://thonny.org), een
+  eenvoudige Python-omgeving voor beginners.
+
+## Privacy
+
+Deze site gebruikt geen accounts, cookies of trackers. Je code blijft op je
+eigen apparaat.

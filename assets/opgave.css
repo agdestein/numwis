@@ -1,0 +1,141 @@
+/* Interactive Python exercises (assets/opgave.js) */
+
+:root {
+  --opgave-border: #d5dbe3;
+  --opgave-bg: #f7f9fb;
+  --opgave-code-bg: #ffffff;
+  --opgave-muted: #5b6573;
+  --opgave-accent: #1d5fa8;
+  --opgave-ok: #1f7a3a;
+  --opgave-error: #b42318;
+  --py-keyword: #7a2fb5;
+  --py-comment: #5f7a5f;
+  --py-string: #a3412b;
+  --py-number: #0b6e8c;
+  --py-function: #1d5fa8;
+  --py-operator: #555;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+.opgave { container-type: inline-size; margin: 1.5rem 0 2rem; }
+.opgave-grid { display: grid; gap: 1rem; align-items: start; }
+/* stacked: keep the sliders, run button and output within reach of the code */
+.opgave-editor .cm-scroller { max-height: min(60vh, 32rem); }
+/* side by side only when the code still fits next to the output */
+@container (min-width: 1050px) {
+  .opgave-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .opgave-right { position: sticky; top: 4.5rem; }
+  .opgave-editor .cm-scroller { max-height: 34rem; }
+}
+.opgave-left, .opgave-right { min-width: 0; }
+
+/* bars above/below the editor and output */
+.opgave-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+  font-size: .85rem; color: var(--opgave-muted);
+  margin: .35rem 0;
+}
+.opgave-file, .opgave-label { font-family: var(--mono); font-weight: 600; color: #222; }
+.opgave-label { font-family: inherit; }
+.opgave-status {
+  margin-left: auto; padding: .1rem .55rem; border-radius: 999px;
+  font-size: .78rem; background: #eef1f5;
+}
+.opgave-status::before { content: "● "; }
+.opgave-status[data-state="loading"]::before { content: "◌ "; }
+.opgave-status[data-state="loading"] { animation: opgave-pulse 1.2s ease-in-out infinite; }
+.opgave-status[data-state="ready"] { color: var(--opgave-ok); background: #e7f4ea; }
+.opgave-status[data-state="busy"] { color: #8a5a00; background: #fff4d6; }
+.opgave-status[data-state="error"] { color: var(--opgave-error); background: #fde8e6; }
+@keyframes opgave-pulse { 50% { opacity: .45; } }
+
+.opgave-note { margin-right: auto; font-style: italic; }
+.opgave-tools button, .opgave-actions button {
+  font: inherit; font-size: .82rem; cursor: pointer;
+  border: 1px solid var(--opgave-border); border-radius: .4rem;
+  background: #fff; color: #333; padding: .2rem .6rem;
+}
+.opgave-tools button:hover { background: var(--opgave-bg); }
+
+/* editor */
+.opgave-editor {
+  border: 1px solid var(--opgave-border); border-radius: .5rem;
+  overflow: hidden; background: var(--opgave-code-bg);
+}
+.opgave-editor .cm-editor { font-size: .86rem; }
+.opgave-editor .cm-editor.cm-focused { outline: 2px solid color-mix(in srgb, var(--opgave-accent) 45%, transparent); }
+.opgave-editor .cm-scroller { font-family: var(--mono); line-height: 1.5; }
+/* no ligatures: students must see the <= they would type */
+.opgave-editor .cm-scroller, pre.opgave-output, .param-name, .param-value, .param input {
+  font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0;
+}
+.opgave-editor .cm-gutters { background: var(--opgave-bg); border-right: 1px solid var(--opgave-border); color: #9aa3ae; }
+.opgave-editor .cm-activeLine { background: #f2f6fb; }
+.opgave-editor .cm-activeLineGutter { background: #e8eef6; }
+
+/* parameter sliders: one shared grid, so names, sliders and values line up */
+.opgave-params {
+  display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content;
+  align-items: center; column-gap: .75rem; row-gap: .45rem;
+  padding: .75rem .9rem; margin-bottom: .75rem;
+  background: var(--opgave-bg); border: 1px solid var(--opgave-border); border-radius: .5rem;
+}
+.param { display: contents; }
+.param-name, .param-value { font-family: var(--mono); font-size: .9rem; }
+.param-name { font-weight: 600; }
+.param-value { text-align: right; color: var(--py-number); min-width: 3.5rem; max-width: 7rem; overflow: hidden; text-overflow: ellipsis; }
+.param-help { grid-column: 2 / -1; font-size: .78rem; color: var(--opgave-muted); margin: -.45rem 0 .2rem; }
+.param input[type="range"] { width: 100%; accent-color: var(--opgave-accent); height: 1.6rem; }
+.param input[type="text"] {
+  grid-column: 2 / -1;
+  font-family: var(--mono); font-size: .9rem; width: 100%;
+  padding: .25rem .45rem; border: 1px solid var(--opgave-border); border-radius: .35rem;
+}
+.param-missing > * { opacity: .45; }
+
+/* run */
+.opgave-actions { display: flex; align-items: center; gap: .75rem; margin-bottom: .5rem; }
+.opgave-actions .opgave-run {
+  font-size: 1rem; font-weight: 600; padding: .5rem 1.4rem;
+  background: var(--opgave-accent); border-color: var(--opgave-accent); color: #fff;
+  border-radius: .5rem; min-height: 2.75rem;
+}
+.opgave-actions .opgave-run:hover { filter: brightness(1.08); }
+.opgave-actions .opgave-run.is-running { background: var(--opgave-error); border-color: var(--opgave-error); }
+.opgave-hint { font-size: .8rem; color: var(--opgave-muted); }
+@media (hover: none) { .opgave-hint { display: none; } }
+
+/* output */
+.opgave-compare { margin-left: auto; font-size: .8rem; }
+.opgave-compare.is-same { color: var(--opgave-ok); font-weight: 600; }
+.opgave-compare.is-error { color: var(--opgave-error); }
+pre.opgave-output {
+  font-family: var(--mono); font-size: .8rem; line-height: 1.45;
+  background: #fbfbf8; color: #1f2328;
+  border: 1px solid var(--opgave-border); border-radius: .5rem;
+  padding: .7rem .85rem; margin: 0;
+  max-height: 30rem; overflow: auto; white-space: pre;
+}
+pre.opgave-output img {
+  display: block; max-width: 100%; height: auto;
+  margin: .4rem 0; background: #fff; border-radius: .25rem;
+}
+.out-err { color: var(--opgave-error); }
+.out-note { color: var(--opgave-muted); font-style: italic; white-space: pre-wrap; }
+
+.opgave-booklet { margin-top: .75rem; }
+.opgave-booklet summary { cursor: pointer; font-size: .85rem; color: var(--opgave-muted); }
+.opgave-booklet pre.opgave-output { margin-top: .4rem; background: #f4f4f0; }
+
+.opgave-failed { color: var(--opgave-error); }
+
+/* phones: a bit tighter */
+@media (max-width: 576px) {
+  .opgave { margin-left: -.25rem; margin-right: -.25rem; }
+  .opgave-editor .cm-editor { font-size: .8rem; }
+  .opgave-params { column-gap: .6rem; }
+  .opgave-actions .opgave-run { flex: 1; }
+}
+
+/* the parameter spec is read by opgave.js; never show it raw */
+.opgave .parameters { display: none; }

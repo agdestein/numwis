@@ -1,0 +1,8 @@
+<script type="module">
+  // Load the exercise widget only on pages that contain an exercise.
+  // quarto:offset is the relative path from this page to the site root.
+  if (document.querySelector(".opgave[data-code]")) {
+    const base = document.querySelector('meta[name="quarto:offset"]')?.content ?? "./";
+    import(base + "assets/opgave.js").then((module) => module.init(base));
+  }
+</script>

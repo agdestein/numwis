@@ -1,0 +1,49 @@
+---
+title: "De drijvende bal"
+subtitle: "Opgave 1 · bisectie (§ 4.2)"
+aliases:
+  - ../h4-bal.html
+---
+
+Een houten bal met straal $R = 10$ cm en dichtheid $650~\text{kg/m}^3$
+(beukenhout) drijft in een vijver. Hoe diep steekt de bal in het water?
+
+Volgens de wet van Archimedes weegt het verplaatste water evenveel als de bal.
+Daaruit volgt dat de diepte $d$ moet voldoen aan
+
+$$
+f(d) = d^3 - 3Rd^2 + 4\rho R^3 = d^3 - 30\,d^2 + 2600 = 0 ,
+$$
+
+met $\rho = 0{,}65$ de relatieve dichtheid. De bal ligt zeker tussen $d = 0$
+(bovenop het water) en $d = 2R = 20$ (helemaal onder), en $f(0) > 0 > f(20)$:
+een goed startinterval voor bisectie.
+
+::: {.opgave code="bisectie_bal.py"}
+```{.parameters}
+a   : -10 .. 30 step 0.5   # linkergrens van het startinterval
+b   : -10 .. 30 step 0.5   # rechtergrens van het startinterval
+eps : 0.1 | 0.01 | 0.001 | 0.0001 | 1e-6 | 1e-10 | 1e-14 | 1e-15 | 0   # stop als b - a kleiner is dan eps
+```
+:::
+
+::: {.probeer}
+## Probeer zelf
+
+1. Maak `eps` tien keer zo klein. Hoeveel stappen heeft bisectie extra nodig?
+   En bij honderd keer zo klein?
+2. Kies `a = 15` en `b = 30`. De code vindt een nulpunt, maar is dat de diepte
+   van de bal? (Hint: $f$ heeft drie nulpunten. Welke betekenen iets voor de bal?)
+3. Kies `a = 13` en `b = 20`. Nu hebben $f(a)$ en $f(b)$ hetzelfde teken. Wat
+   geeft de code als antwoord, en waarom is dat onzin?
+4. Zet `eps` op `1e-15`. Waarom stopt de lus nu niet meer? (Hint: tussen twee
+   getallen die de computer vlak naast elkaar kan opslaan, zit geen ander getal
+   meer.)
+:::
+
+::: {.callout-tip collapse="true"}
+## Wat valt op?
+
+De methode komt er gegarandeerd, maar traag: elke stap halveert het interval,
+dus je wint ongeveer één decimaal per drie stappen (stelling 4.2).
+:::
