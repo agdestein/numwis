@@ -442,6 +442,11 @@ class Exercise {
       if (this.lines > MAX_LINES) {
         this.stop(`Gestopt: meer dan ${MAX_LINES} regels uitvoer. Zit er een oneindige lus in je code?`);
       }
+    } else if (msg.type === "hint") {
+      // [kind, text] parts: plain text, an inline name, or a whole code line
+      const tags = { text: "span", code: "code", line: "code" };
+      (this.sink ?? this.output).append(el("span", { class: "out-hint" },
+        ...msg.parts.map(([kind, text]) => el(tags[kind], kind === "line" ? { class: "hint-line" } : {}, text))));
     } else if (msg.type === "image") {
       const [width, height] = pngSize(msg.png);
       (this.sink ?? this.output).append(el("img", {

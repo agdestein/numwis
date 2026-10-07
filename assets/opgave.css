@@ -126,6 +126,13 @@ pre.opgave-output img {
 }
 .out-err { color: var(--opgave-error); }
 .out-note { color: var(--opgave-muted); font-style: italic; white-space: pre-wrap; }
+.out-hint {
+  display: block; white-space: pre-wrap; margin-top: .6rem; padding: .45rem .65rem;
+  font-family: var(--bs-body-font-family, system-ui, sans-serif); font-size: .85rem; line-height: 1.45;
+  color: #12355b; background: #eaf2fb; border-left: 3px solid var(--opgave-accent); border-radius: .25rem;
+}
+.out-hint code { font-family: var(--mono); font-size: .92em; color: inherit; background: rgba(29, 95, 168, .1); padding: 0 .2em; border-radius: .2em; }
+.out-hint code.hint-line { display: block; width: fit-content; margin: .3rem 0 .3rem 1rem; padding: .1rem .4rem; }
 
 .opgave-booklet { margin-top: .75rem; }
 .opgave-booklet summary { cursor: pointer; font-size: .85rem; color: var(--opgave-muted); }
